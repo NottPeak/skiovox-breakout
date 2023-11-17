@@ -3,7 +3,7 @@ const target = { targetId: 'browser' }
 function injection() {
     alert("Yo!!");
 }
-
+var onInjectionFinished;
 async function onNetEvent(_, _, event) {
     if (!event.request.url.startsWith("chrome-extension:")) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
@@ -17,6 +17,7 @@ async function onNetEvent(_, _, event) {
         responseCode: 200,
         body: btoa(`(${injection.toString()})()`)
     })
+    onInjectionFinished({status: 'success'});
 }
 
 async function start() {
@@ -31,4 +32,13 @@ async function stop() {
     await chrome.debugger.detach(target);
 }
 
-start();
+chrome.runtime.onMessage.addListener(async function (msg, sender, respondWith) {
+    if (msg.type === "startinspect") {
+        await start();
+        onInjectionFinished = respondWith;
+    }
+    if (msg.type === "cancelinspect") {
+        await stop();
+        respondWith({status: 'success'});
+    }
+})
