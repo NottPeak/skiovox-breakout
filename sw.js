@@ -30,17 +30,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
                 
             }
         })
-        var id = setInterval(async () => {
-
-            (await chrome.debugger.sendCommand({ targetId: 'browser' }, "Target.getTargets")).targetInfos.forEach(async function (t) {
-                console.log(t.type);
-                if (t.url.includes('chrome-extension://' + msg.extid) && t.type === "service_worker") {
-                    
-                    clearInterval(id)
-                }
-            })
-
-        }, 200);
+        await chrome.debugger.sendCommand({targetId: 'browser'}, 'Fetch.enable');
 
 
 
