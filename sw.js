@@ -4,8 +4,9 @@ function injection() {
     alert("Yo!!");
 }
 var onInjectionFinished;
+var extPrefixContext;
 async function onNetEvent(_, _, event) {
-    if (!event.request.url.startsWith("chrome-extension:")) {
+    if (!event.request.url.startsWith("chrome-extension://" + extPrefixContext)) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
             requestId: event.requestId
         });
@@ -34,6 +35,7 @@ async function stop() {
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, respondWith) {
     if (msg.type === "startinspect") {
+        extPrefixContext = msg.prefix;
         await start();
         onInjectionFinished = respondWith;
     }
