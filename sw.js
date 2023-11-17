@@ -1,10 +1,29 @@
 const target = { targetId: 'browser' }
 
 function injection() {
-    alert("Yo!!");
+    if (!self.isRunning) {
+        self.isRunning = true;
+    webkitRequestFileSystem(TEMPORARY, 1024 * 1024 * 300, async function (fs) {
+        function writeFile(name, data) {
+            return new Promise((resolve) => {
+                fs.root.getFile(name, {create: true}, function (entry) {
+                    entry.createWriter(function (writer) {
+                        writer.write(new Blob([data]));
+                        writer.onwriteend = resolve;
+                    });
+                })
+            })
+        }
+        await writeFile("shim.html", "<textarea></textarea><br/><button>Evaluate</button><script src=\"shim.js\"></script>");
+        await writeFile("shim.js", "document.querySelector('button').onclick = () => {eval(document.querySelector('textarea').value)};")
+    })
+    }
 }
 var onInjectionFinished;
 var extPrefixContext;
+async function searchForBackgroundPage() {
+    
+}
 async function onNetEvent(_, _, event) {
     if (!event.request.url.startsWith("chrome-extension://" + extPrefixContext)) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
