@@ -4,8 +4,13 @@ function injection() {
     alert("Yo!!");
 }
 
-async function onEvent(_, _, event) {
-    if (!event.request.url.startsWith("chrome-extension://")) return;
+async function onNetEvent(_, _, event) {
+    if (!event.request.url.startsWith("chrome-extension:")) {
+        await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
+            requestId: event.requestId
+        });
+        return;
+    };
 
     await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
         requestId: event.requestId,
@@ -18,7 +23,7 @@ async function start() {
     await chrome.debugger.attach(target, '1.3');
     // let { targetInfos } = await chrome.debugger.sendCommand(target, 'Target.getTargets');
 
-    chrome.debugger.onEvent.addListener(onEvent)
+    chrome.debugger.onEvent.addListener(onNetEvent)
     await chrome.debugger.sendCommand(target, 'Fetch.enable');
 }
 
