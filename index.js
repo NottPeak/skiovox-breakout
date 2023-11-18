@@ -1,19 +1,20 @@
 let extensionPrefix = document.querySelector("input").value;
 let payload = document.querySelector("textarea").value;
 let status = document.querySelector("#status");
-let [start, cancel] = document.querySelectorAll("button");
+let [cancel, start] = document.querySelectorAll("button");
 function changeStatusMessage(message) {
     status.textContent = ([message] || [""]).join();
 }
 function checkIfValid() {
     return new Promise((resolve, reject) => {
-        resolve(Boolean(extensionPrefix.length > 0));
+        resolve(Boolean(document.querySelector("input").value.length > 0));
     });
 }
 start.addEventListener("click", async function () {
     let valid = await checkIfValid();
     if (!valid) return;
-    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload });
+    payload = document.querySelector("textarea").value;
+    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
     if (!msg) return changeStatusMessage("failed!");
     return changeStatusMessage(msg);
 });

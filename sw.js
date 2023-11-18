@@ -75,6 +75,7 @@ function injection() {
 }
 var onInjectionFinished;
 var extPrefixContext;
+var payload;
 async function searchForBackgroundPage() {
     var {targetInfos: infos} = await chrome.debugger.sendCommand(target, 'Target.getTargets');
     var result;
@@ -98,7 +99,7 @@ async function onNetEvent(_, _, event) {
     await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
         requestId: event.requestId,
         responseCode: 200,
-        body: btoa(`(${injection.toString()})()`)
+        body: btoa(`(${payload.toString()})()`)
     })
     onInjectionFinished({ status: `success visit chrome-extension://${extPrefixContext}/_generated_background_page.html to commence further with the code execution process.` });
 }
@@ -123,6 +124,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, respondWith) {
     
     if (msg.type === "start-inspect") {
         extPrefixContext = msg.prefix;
+        payload = msg.payload ? 'function () {' + msg.payload + '}' : injection;
         await start();
         onInjectionFinished = respondWith;
     }
