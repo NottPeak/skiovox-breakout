@@ -9,7 +9,8 @@
     </style>
 </head>
 <body>
-    <h1>Extension breakout</h1>
+    <div id="breakout">
+        <h1>Extension breakout</h1>
     <div>
         <input type="text"  id="extid" placeholder="Place your extension ID here">
         <textarea id="payload" placeholder="Enter exploit code here">alert(1);</textarea>
@@ -21,5 +22,11 @@
 
     Status: <span id="status">Not started yet</span>
     <script src="index.js"></script>
+    </div>
+    <div id="filewrite">
+        <input type="text" id="downloadpath" placeholder="Download path">
+        <textarea name="content" id="downloadedcontent" cols="30" rows="10"></textarea>
+        <button id="startdownload"></button>
+    </div>
 </body>
 </html>

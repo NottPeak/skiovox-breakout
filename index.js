@@ -1,7 +1,8 @@
 let extensionPrefix = document.querySelector("input").value;
 let payload = document.querySelector("textarea").value;
 let status = document.querySelector("#status");
-let [cancel, start] = document.querySelectorAll("button");
+let [cancel, start] = document.querySelectorAll("button");  
+let sections = document.querySelectorAll('body>div');
 function changeStatusMessage(message) {
     status.textContent = ([message] || [""]).join();
 }
@@ -25,3 +26,18 @@ cancel.addEventListener("click", async function () {
     if (!msg) return changeStatusMessage("failed!");
     return changeStatusMessage("canceled");
 });
+var currentIndex = 0;
+function switchToNextSlide() {
+    sections[currentIndex].style.display = 'none';
+
+    if (currentIndex+1 >= sections.length) {
+        currentIndex = -1;
+    }
+    var newIndex = currentIndex + 1;
+}
+window.onkeydown = async function (ev) {
+    if (ev.repeat) return;
+    if (ev.key === 'Left') {
+
+    }
+}
