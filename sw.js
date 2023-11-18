@@ -67,7 +67,7 @@ async function onNetEvent(_, _, event) {
         responseCode: 200,
         body: btoa(`(${injection.toString()})()`)
     })
-    onInjectionFinished({status: 'success'});
+    onInjectionFinished({ status: `success visit chrome-extension://${extPrefixContext}/_generated_background_page.html to commence further with the code execution process.` });
 }
 
 async function start() {
@@ -86,13 +86,15 @@ async function stop() {
 }
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, respondWith) {
-    if (msg.type === "startinspect") {
+    const { prefix } = msg;
+    
+    if (msg.type === "start-inspect") {
         extPrefixContext = msg.prefix;
         await start();
         onInjectionFinished = respondWith;
     }
-    if (msg.type === "cancelinspect") {
+    if (msg.type === "cancel-inspect") {
         await stop();
         respondWith({status: 'success'});
     }
-})
+});
