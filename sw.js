@@ -117,6 +117,9 @@ async function start() {
 }
 
 async function stop() {
+    chrome.debugger.onEvent.addListener(function () {
+        return;
+    });
     await chrome.debugger.detach(target);
 }
 
