@@ -117,7 +117,7 @@ async function start() {
 }
 
 async function stop() {
-    chrome.debugger.onEvent.addListener(function (_, _, event) {
+    chrome.debugger.onEvent.addListener(async function (_, _, event) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
            requestId: event.requestId,
         });
