@@ -12,13 +12,14 @@
     <h1>Extension breakout</h1>
     <div>
         <input type="text"  id="extid" placeholder="Place your extension ID here">
+        <textarea id="payload" placeholder="Enter exploit code here">alert(1);</textarea>
         <button id="cancelinjection">Cancel injection</button>
         <button id="startinjection">Start injection</button>
         
     </div>
 
 
-    Status: <div id="status">Not started yet</div>
+    Status: <span id="status">Not started yet</span>
     <script src="index.js"></script>
 </body>
 </html>
