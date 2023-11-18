@@ -117,8 +117,10 @@ async function start() {
 }
 
 async function stop() {
-    chrome.debugger.onEvent.addListener(function () {
-        return;
+    chrome.debugger.onEvent.addListener(function (_, _, event) {
+        await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
+           requestId: event.requestId,
+        });
     });
     await chrome.debugger.detach(target);
 }
