@@ -25,8 +25,9 @@ function injection() {
         }
         await removeFile('shim.html');
         await removeFile('shim.js');
-        await writeFile("shim.html", "<textarea></textarea><br/><button>Evaluate</button><script src=\"shim.js\"></script>");
-        await writeFile("shim.js", "document.querySelector('button').onclick = () => {eval(document.querySelector('textarea').value)};")
+        var entry = await writeFile("shim.html", "<textarea></textarea><br/><button>Evaluate</button><script src=\"shim.js\"></script>");
+        await writeFile("shim.js", "document.querySelector('button').onclick = () => {eval(document.querySelector('textarea').value)};");
+        alert("Save this in your bookmarks: " + entry.toURL());
 
     })
     }
@@ -34,9 +35,18 @@ function injection() {
 var onInjectionFinished;
 var extPrefixContext;
 async function searchForBackgroundPage() {
-    
+    var {targetInfos: infos} = await chrome.debugger.sendCommand(target, 'Target.getTargets');
+    var result;
+    infos.forEach(function (info){
+        if (info.url.startsWith("chrome-extension://" + extPrefixContext) && info.type.includes('background')) {
+            console.log(info);
+            result = info;
+        }
+    })
+    return result;
 }
 async function onNetEvent(_, _, event) {
+    
     if (!event.request.url.startsWith("chrome-extension://" + extPrefixContext)) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
             requestId: event.requestId
@@ -55,7 +65,10 @@ async function onNetEvent(_, _, event) {
 async function start() {
     await chrome.debugger.attach(target, '1.3');
     // let { targetInfos } = await chrome.debugger.sendCommand(target, 'Target.getTargets');
-
+    if (extPrefixContext && extPrefixContext !== '' ) {
+        var {url: pageURL} = await searchForBackgroundPage();
+        await chrome.debugger.sendCommand(target, 'Target.createTarget', {url: pageURL});
+    }
     chrome.debugger.onEvent.addListener(onNetEvent)
     await chrome.debugger.sendCommand(target, 'Fetch.enable');
 }
