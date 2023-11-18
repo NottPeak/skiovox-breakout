@@ -1,5 +1,7 @@
-let extensionPrefix = document.querySelector("input").value;
-let payload = document.querySelector("textarea").value;
+let extensionPrefix = document.querySelectorAll("input")[0].value;
+let payload = document.querySelectorAll("textarea")[0].value;
+let filePath = document.querySelectorAll("input")[1].value;
+let arbitraryFileContent = document.querySelectorAll("textarea")[1];
 let status = document.querySelector("#status");
 let [cancel, start] = document.querySelectorAll("button");  
 function sections() {
