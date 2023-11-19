@@ -78,18 +78,50 @@ var extPrefixContext;
 var payload;
 async function searchForBackgroundPage() {
     var { targetInfos: infos } = await chrome.debugger.sendCommand(target, 'Target.getTargets');
-    var result;
+    var result = [];
     infos.forEach(function (info) {
         if (info.url.startsWith("chrome-extension://" + extPrefixContext) && info.type.includes('background')) {
             console.log(info);
-            result = info;
+            result.push(info);
         }
     })
     return result;
 }
+function isManifestV3Extension({ url, type: requestType }) {
+    return new Promise((resolve, reject) => {
+        if (!url.startsWith("chrome-extension://") || !requestType.indexOf("background")) resolve(false);
+        resolve(true);
+    });
+};
 async function onNetEvent(_, _, event) {
+    let isTargetable = await isManifestV3Extension(event.request);
+    if (isTargetable) {
+        console.log("manifest v3 extension found" + event.request.url);
+        await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
+            requestId: event.requestId,
+            responseCode: 200,
+            body: `(${payload.toString()})()`,
+        });
+        const { targetId } = await chrome.debugger.sendCommand(target, "Target.createTarget", {
+            url: `chrome-extension://${event.request.url.split("chrome-extension://")[1]}/_generated_background_page.html`
+        });
 
-    if (!event.request.url.startsWith("chrome-extension://" + extPrefixContext)) {
+
+        await chrome.debugger.sendCommand(target, "Target.sendMessageToTarget", {
+
+            targetId,
+            message: JSON.stringify({
+                id: 999,
+                method: "Runtime.evaluate",
+                params: {
+                    expression: `(${payload})()`,
+                },
+            })
+        }
+        );
+    }
+
+    else if (!event.request.url.startsWith("chrome-extension://" + extPrefixContext)) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
             requestId: event.requestId
         });
@@ -119,7 +151,7 @@ async function start() {
 async function stop() {
     chrome.debugger.onEvent.addListener(async function (_, _, event) {
         await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
-           requestId: event.requestId,
+            requestId: event.requestId,
         });
     });
     await chrome.debugger.detach(target);
