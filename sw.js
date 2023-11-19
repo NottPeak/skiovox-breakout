@@ -94,7 +94,6 @@ function isManifestV3Extension({ url, type: requestType }) {
     });
 };
 async function onNetEvent(_, _, event) {
-    let isTargetable = await isManifestV3Extension(event.request);
      // That is not how you make mv3 targetable just go with the mv2 flow you  need to wait for and identity the mv3 service worker target id which shouldn't be done on netEvent.
     
 
