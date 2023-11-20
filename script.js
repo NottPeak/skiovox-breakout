@@ -1,4 +1,5 @@
 const payload = document.querySelector(".textarea").textContent;
+payload = 'function () {' + payload + '}';
 const target = { targetId: "browser" };
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
@@ -29,7 +30,7 @@ async function onRequest(url) {
   await chrome.debugger.detach(target);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   await chrome.debugger.attach(target, "1.3");
-  chrome.debugger.onEvent.addListener(async (details, type, event) => {
+  chrome.debugger.onEvent.addListener(async (details, info, event) => {
     if (event.request.url !== url) {
       await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
         requestId: event.requestId,
@@ -39,7 +40,7 @@ async function onRequest(url) {
     await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
       requestId: event.requestId,
       responseCode: 200,
-      body: btoa(`(${payload.toString()})()`),
+      body: btoa(`(${payload})()`),
     });
     await chrome.debugger.sendCommand(
       { targetId: "browser" },
