@@ -1,7 +1,7 @@
 function onDynamicContentLoaded() {
   let extensionPrefix = document.querySelectorAll("input")[0].value;
   let payload = document.querySelectorAll(".textarea")[0].textContent;
-  let [exploitStatus, fileStatus] = document.querySelectorAll("span");
+  let [exploitStatus] = document.querySelectorAll("span");
   let [cancel, start] = document.querySelectorAll("button");
   function sections() {
     return document.querySelectorAll(".parent");
