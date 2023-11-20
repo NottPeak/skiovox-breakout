@@ -54,6 +54,7 @@ async function onRequest(url) {
 
 async function setUpButtons() {
   let targets = getManifestV3Targets();
+  console.log(targets);
   for (const target in targets) {
     let button = document.createElement("button");
     button.textContent = targets[target].url;
