@@ -1,8 +1,9 @@
 const payload = document.querySelector(".textarea").textContent;
+const target = { targetId: "browser" };
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
-    await chrome.debugger.attach({ targetId: "browser" }, "1.3");
-    let { targetInfos: targets } = await chrome.debugger.sendCommand({ targetId: "browser" }, "Target.getTargets");
+    await chrome.debugger.attach(target, "1.3");
+    let { targetInfos: targets } = await chrome.debugger.sendCommand(target, "Target.getTargets");
     resolve(targets);
   });
 }
@@ -19,12 +20,11 @@ async function getManifestV3Targets() {
   return extensions;
 }
 async function onRequest(url) {
-  await chrome.debugger.detach({ targetId: "browser" });
-  await chrome.debugger.attach({ targetId:  "browser" }, "1.3");
+  await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, type, event) => {
     if (event.request.url !== url) {
       await chrome.debugger.sendCommand(
-        { targetId: "browser" },
+        target,
         "Fetch.continueRequest",
         {
           requestId: event.requestId,
@@ -33,7 +33,7 @@ async function onRequest(url) {
       return;
     }
     await chrome.debugger.sendCommand(
-      { targetId: "browser" },
+      target,
       "Fetch.fulfillRequest",
       {
         requestId: event.requestId,
@@ -42,15 +42,15 @@ async function onRequest(url) {
       }
     );
     await chrome.debugger.sendCommand(
-      { targetId: "browser" },
+     target,
       "Target.createTarget",
       {
         url: url,
       }
     );
   });
-  await chrome.debugger.sendCommand({ targetId: "browser" }, "Fetch.enable");
-  await chrome.debugger.detach({ targetId: "browser" });
+  await chrome.debugger.sendCommand(target, "Fetch.enable");
+  await chrome.debugger.detach(target);
 }
 
 async function setUpButtons() {
