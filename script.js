@@ -60,8 +60,8 @@ async function start(url) {
   await openWindow(url);
 }
 async function setUpButtons() {
-  if (document.querySelector(".target").children) {
-    let elements = [...document.querySelector(".target").children];
+  if (document.querySelector(".targets").children) {
+    let elements = [...document.querySelector(".targets").children];
     for (let elem in elements) {
       elements[elem].remove();
     }
