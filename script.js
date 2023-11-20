@@ -30,6 +30,7 @@ async function onRequest(url) {
   await chrome.debugger.detach(target);
   await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, info, event) => {
+    console.log(event.request.url);
     if (event.request.url !== url) {
       await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
         requestId: event.requestId,
