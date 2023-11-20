@@ -10,9 +10,9 @@ async function getManifestV3Targets() {
   const extensions = [];
   const allTargets = await getAllTargets();
   for (const target in allTargets) {
-    const { protocol } = new URL(target.url);
-    if (protocol == "chrome-extension:" && target.type == "service_worker") {
-      extensions.push(target);
+    const { protocol } = new URL(allTargets[target].url);
+    if (protocol == "chrome-extension:" && allTargets[target].type == "service_worker") {
+      extensions.push(allTargets[target]);
     }
   }
   return extensions;
