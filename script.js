@@ -1,5 +1,4 @@
-const payload = document.querySelector(".textarea").textContent;
-payload = 'function () {' + payload + '}';
+let payload = document.querySelector(".textarea").textContent;
 const target = { targetId: "browser" };
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
@@ -27,6 +26,7 @@ async function getManifestV3Targets() {
   return extensions;
 }
 async function onRequest(url) {
+  payload = 'function () {' + payload + '}';
   await chrome.debugger.detach(target);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   await chrome.debugger.attach(target, "1.3");
