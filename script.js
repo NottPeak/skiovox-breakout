@@ -23,11 +23,11 @@ async function getManifestV3Targets() {
       extensions.push(allTargets[target]);
     }
   }
-          await chrome.debugger.detach(target);
+  await chrome.debugger.detach(target);
   return extensions;
 }
 async function onRequest(url) {
-  payload = document.querySelector(".textarea").value;
+  payload = document.querySelector(".textarea").textContent;
    await chrome.runtime.sendMessage({ type: "start-inspect", prefix: url, payload: payload });
 }
 async function openWindow(url) {
