@@ -1,3 +1,4 @@
+const { value: payload } = document.querySelector(".textarea").textContent;
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
     await chrome.debugger.attach({ targetId: "browser" }, "1.3");
@@ -60,7 +61,7 @@ async function setUpButtons() {
       onRequest(targets[target].url);
     };
     let id = document.createElement("h2");
-    id.textContent = targets[target].id + " - " + targets[target].type;
+    id.textContent = targets[target].url.split("chrome-extension://")[1].toString().split("/")[0] + " - " + targets[target].type;
     document.querySelector(".targets").appendChild(button);
     document.querySelector(".targets").appendChild(id);
   }
