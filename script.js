@@ -42,17 +42,20 @@ async function onRequest(url) {
       responseCode: 200,
       body: btoa(`(${payload})()`),
     });
-    return await chrome.debugger.sendCommand(
+  });
+  await chrome.debugger.sendCommand(target, "Fetch.enable");
+}
+async function openWindow() {
+  await chrome.debugger.detach(target);
+  await chrome.debugger.attach(target, "1.3");
+   await chrome.debugger.sendCommand(
       { targetId: "browser" },
       "Target.createTarget",
       {
         url: url,
       }
     );
-  });
-  await chrome.debugger.sendCommand(target, "Fetch.enable");
 }
-
 async function setUpButtons() {
   let targets = await getManifestV3Targets();
   for (const target in targets) {
