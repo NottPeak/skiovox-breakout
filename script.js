@@ -30,7 +30,7 @@ async function onRequest(url) {
   await chrome.debugger.detach(target);
   await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, info, event) => {
-    if (!event.request.url.startsWith("chrome-extension://") || (new URL(event.request.url)).hostname !== (new URL(url)).hostname) {
+    if (!event.request.url.startsWith("chrome-extension://" + url.split("chrome-extension://")[1].toString().split("/")[0])) {
       await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
         requestId: event.requestId,
       });
