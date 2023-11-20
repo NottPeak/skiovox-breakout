@@ -1,8 +1,8 @@
 function onDynamicContentLoaded() {
-  let extensionPrefix = document.querySelectorAll("input")[0].value;
-  let payload = document.querySelectorAll(".textarea")[0].textContent;
-  let [exploitStatus] = document.querySelectorAll("span");
-  let [cancel, start] = document.querySelectorAll("button");
+let extensionPrefix = document.querySelectorAll("input")[0].value;
+  let payload = document.querySelectorAll("textarea")[0].textContent;
+  let exploitStatus = document.querySelector(".status");
+  let [ cancel, start ] = document.querySelectorAll("button");
   function sections() {
     return document.querySelectorAll(".parent");
   }
@@ -19,11 +19,7 @@ function onDynamicContentLoaded() {
     if (!valid) return;
     payload = document.querySelectorAll(".textarea")[0].textContent;
     extensionPrefix = document.querySelectorAll("input")[0].value;
-    const { status } = await chrome.runtime.sendMessage({
-      type: "start-inspect",
-      prefix: extensionPrefix,
-      payload: payload === "" ? undefined : payload,
-    });
+    const { status } = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
     if (!status) return changeStatusMessage("failed!");
     return changeStatusMessage(status);
   });
