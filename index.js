@@ -16,13 +16,11 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
   }
   start.onclick = async function () {
     alert(1);
-    let valid = await checkIfValid();
-    if (!valid) return;
     payload = document.querySelectorAll(".textarea")[0].innerHTML;
     extensionPrefix = document.querySelectorAll("input")[0].value;
     console.log([payload, extensionPrefix].join());
     let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? `alert(1)` : payload });
-    return changeStatusMessage(msg);
+    return changeStatusMessage(msg.status);
   }
 
   cancel.addEventListener("click", async function () {
