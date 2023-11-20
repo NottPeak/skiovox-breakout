@@ -20,9 +20,9 @@ start.addEventListener("click", async function () {
     if (!valid) return;
     payload = document.querySelector("textarea").value;
     extensionPrefix = document.querySelector("input").value;
-    const { status } = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
-    if (!status) return changeStatusMessage("failed!");
-    return changeStatusMessage(status);
+    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
+    if (!msg) return changeStatusMessage("failed!");
+    return changeStatusMessage(msg.status);
 });
 
 cancel.addEventListener("click", async function () {
