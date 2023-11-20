@@ -85,4 +85,4 @@ async function setUpButtons() {
     document.querySelector(".targets").appendChild(id);
   }
 }
-document.querySelector(".start").onclick = setUpButtons();
+document.querySelector(".start").onclick = setUpButtons;
