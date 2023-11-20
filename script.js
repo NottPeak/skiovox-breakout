@@ -20,7 +20,6 @@ async function getManifestV3Targets() {
   return extensions;
 }
 async function onRequest(url) {
-  await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, type, event) => {
     if (event.request.url !== url) {
       await chrome.debugger.sendCommand(
