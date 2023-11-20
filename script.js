@@ -1,8 +1,6 @@
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
-    let { targetInfos: targets } = await chrome.runtime.sendMessage({
-      type: "get-targets",
-    });
+    let { targetInfos: targets } = await chrome.debugger.sendCommand({ targetId: "browser" }, "Target.getTargets");
     resolve(targets);
   });
 }
@@ -66,3 +64,4 @@ async function setUpButtons() {
     document.querySelector(".targets").appendChild(id);
   }
 }
+setUpButtons();
