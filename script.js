@@ -39,7 +39,7 @@ async function onRequest(url) {
     await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
       requestId: event.requestId,
       responseCode: 200,
-      body: btoa(`(${payload})()`),
+      body: btoa(`(${payload.toString()})()`),
     });
   });
   await chrome.debugger.sendCommand(target, "Fetch.enable");
