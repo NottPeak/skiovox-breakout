@@ -60,9 +60,11 @@ async function start(url) {
   await openWindow(url);
 }
 async function setUpButtons() {
-  let elements =  [...document.querySelector(".target")?.children];
-  for (let elem in elements) {
+  if (document.querySelector(".target").children) {
+    let elements = [...document.querySelector(".target").children];
+    for (let elem in elements) {
       elements[elem].remove();
+    }
   }
   let targets = await getManifestV3Targets();
   for (let target in targets) {
