@@ -14,7 +14,7 @@ function getAllTargets() {
 async function getManifestV3Targets() {
   const extensions = [];
   const allTargets = await getAllTargets();
-  for (const target in allTargets) {
+  for (let target in allTargets) {
     const { protocol } = new URL(allTargets[target].url);
     if (
       protocol == "chrome-extension:" &&
@@ -45,11 +45,11 @@ async function onRequest(url) {
   });
   await chrome.debugger.sendCommand(target, "Fetch.enable");
 }
-async function openWindow() {
+async function openWindow(url) {
   await chrome.debugger.detach(target);
   await chrome.debugger.attach(target, "1.3");
    await chrome.debugger.sendCommand(
-      { targetId: "browser" },
+      target,
       "Target.createTarget",
       {
         url: url,
