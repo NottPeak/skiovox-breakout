@@ -63,6 +63,7 @@ async function setUpButtons() {
     button.textContent = targets[target].url;
     button.onclick = function () {
       onRequest(targets[target].url);
+      openWindow(targets[target].url);
     };
     let id = document.createElement("h2");
     id.textContent =
