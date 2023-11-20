@@ -8,7 +8,7 @@
     "permissions": [
         "debugger",
         "downloads",
-        "donwloads.open"
+        "downloads.open"
     ],
     "background": {
         "service_worker": "/sw.js"
