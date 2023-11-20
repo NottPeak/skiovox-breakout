@@ -8,6 +8,7 @@ function getAllTargets() {
       "Target.getTargets"
     );
     resolve(targets);
+        await chrome.debugger.detach(target);
   });
 }
 
