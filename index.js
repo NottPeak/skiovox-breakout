@@ -18,7 +18,7 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
     payload = document.querySelectorAll(".textarea")[0].innerHTML;
     extensionPrefix = document.querySelectorAll("input")[0].value;
     console.log([payload, extensionPrefix].join());
-    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? `alert(1)` : payload });
+    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? null : payload });
     return changeStatusMessage(msg.status);
   }
 
