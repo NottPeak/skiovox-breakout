@@ -1,6 +1,6 @@
 function onDynamicContentLoaded() {
 let extensionPrefix = document.querySelectorAll("input")[0].value;
-  let payload = document.querySelectorAll("textarea")[0].textContent;
+  let payload = document.querySelectorAll(".textarea")[0].textContent;
   let exploitStatus = document.querySelector(".status");
   let [ cancel, start ] = document.querySelectorAll("button");
   function sections() {
