@@ -27,22 +27,7 @@ async function getManifestV3Targets() {
 }
 async function onRequest(url) {
   payload = 'function () {' + payload + '}';
-  await chrome.debugger.detach(target);
-  await chrome.debugger.attach(target, "1.3");
-  chrome.debugger.onEvent.addListener(async (details, info, event) => {
-    if (!event.request.url.startsWith("chrome-extension://" + url.split("chrome-extension://")[1].toString().split("/")[0])) {
-      await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
-        requestId: event.requestId,
-      });
-      return;
-    }
-    await chrome.debugger.sendCommand(target, "Fetch.fulfillRequest", {
-      requestId: event.requestId,
-      responseCode: 200,
-      body: btoa(`(${payload.toString()})()`),
-    });
-  });
-  await chrome.debugger.sendCommand(target, "Fetch.enable");
+   await chrome.runtime.sendMessage({ type: "start-inspect", prefix: url, payload: payload });
 }
 async function openWindow(url) {
   await chrome.debugger.detach(target);
@@ -57,7 +42,7 @@ async function openWindow(url) {
 }
 async function start(url) {
   await onRequest(url);
-  await openWindow(url);
+  await openWindow("chrome-extension://" + url + "/_generated_background_page.html");
 }
 async function setUpButtons() {
   if (document.querySelector(".targets").children) {
@@ -71,7 +56,7 @@ async function setUpButtons() {
     let button = document.createElement("button");
     button.textContent = targets[target].url;
     button.onclick = function () {
-      start(targets[target].url);
+      start(targets[target].url.split("chrome-extension://")[1].toString().split("/")[0]);
     };
     let id = document.createElement("h2");
     id.textContent =
