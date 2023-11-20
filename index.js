@@ -11,7 +11,7 @@ function onDynamicContentLoaded() {
   }
   function checkIfValid() {
     return new Promise((resolve, reject) => {
-      resolve(Boolean(extensionPrefix.length > 0));
+      resolve(!(extensionPrefix.length === 0));
     });
   }
   start.addEventListener("click", async function () {
