@@ -1,4 +1,4 @@
-const { value: payload } = document.querySelector(".textarea").textContent;
+const payload = document.querySelector(".textarea").textContent;
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
     await chrome.debugger.attach({ targetId: "browser" }, "1.3");
