@@ -1,6 +1,6 @@
 function onDynamicContentLoaded() {
 let extensionPrefix = document.querySelectorAll("input")[0].value;
-  let payload = document.querySelectorAll(".textarea")[0].innerHTML;
+  let payload = document.querySelectorAll(".textarea")[0].textContent;
   let exploitStatus = document.querySelector(".status");
   let [ cancel, start ] = document.querySelectorAll("button");
   function sections() {
@@ -9,10 +9,17 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
   function changeStatusMessage(message) {
     exploitStatus.textContent = ([message] || [""]).join();
   }
-  
+  function checkIfValid() {
+    return new Promise((resolve, reject) => {
+      resolve(!(extensionPrefix.length === 0));
+    });
+  }
   start.addEventListener("click", async function () {
-    payload = document.querySelectorAll(".textarea")[0].textContent;
+    let valid = await checkIfValid();
+    if (!valid) return;
+    payload = document.querySelectorAll(".textarea")[0].innerHTML;
     extensionPrefix = document.querySelectorAll("input")[0].value;
+    console.log([payload, extensionPrefix].join());
     const { status } = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
     if (!status) return changeStatusMessage("failed!");
     return changeStatusMessage(status);
