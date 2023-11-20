@@ -1,25 +1,17 @@
 function onDynamicContentLoaded() {
   let extensionPrefix = document.querySelectorAll("input")[0].value;
   let payload = document.querySelectorAll(".textarea")[0].textContent;
-  let filePath = document.querySelectorAll("input")[1].value;
   let [exploitStatus, fileStatus] = document.querySelectorAll("span");
-  let arbitraryFileContent =
-    document.querySelectorAll(".textarea")[1].textContent;
   let [cancel, start] = document.querySelectorAll("button");
   function sections() {
     return document.querySelectorAll(".parent");
-  }
-  function sanitizeTextareaStrings() {
-    let textareas = document.querySelectorAll(".textarea");
-    for (let textarea in document.querySelectorAll(".textarea")) {
-    }
   }
   function changeStatusMessage(message) {
     exploitStatus.textContent = ([message] || [""]).join();
   }
   function checkIfValid() {
     return new Promise((resolve, reject) => {
-      resolve(Boolean(document.querySelector("input").value.length > 0));
+      resolve(Boolean(extensionPrefix.length > 0));
     });
   }
   start.addEventListener("click", async function () {
