@@ -14,16 +14,15 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
       resolve(!(extensionPrefix.length === 0));
     });
   }
-  start.onclick =  async function () {
+  start.onclick = async function () {
     alert(1);
     let valid = await checkIfValid();
     if (!valid) return;
     payload = document.querySelectorAll(".textarea")[0].innerHTML;
     extensionPrefix = document.querySelectorAll("input")[0].value;
     console.log([payload, extensionPrefix].join());
-    const { status } = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
-    if (!status) return changeStatusMessage("failed!");
-    return changeStatusMessage(status);
+    let msg = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? `alert(1)` : payload });
+    return changeStatusMessage(msg);
   }
 
   cancel.addEventListener("click", async function () {
