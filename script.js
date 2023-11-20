@@ -30,8 +30,7 @@ async function onRequest(url) {
   await chrome.debugger.detach(target);
   await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, info, event) => {
-    console.log(event.request.url);
-    if (event.request.url !== url) {
+    if (!event.request.url.startsWith("chrome-extension://") || (new URL(event.request.url)).hostname !== (new URL(url)).hostname) {
       await chrome.debugger.sendCommand(target, "Fetch.continueRequest", {
         requestId: event.requestId,
       });
@@ -56,14 +55,21 @@ async function openWindow(url) {
       }
     );
 }
+async function start(url) {
+  await onRequest(url);
+  await openWindow(url);
+}
 async function setUpButtons() {
+  let elements =  [...document.querySelector(".target").children];
+  for (let elem in elements) {
+      elements[elem].remove();
+  }
   let targets = await getManifestV3Targets();
-  for (const target in targets) {
+  for (let target in targets) {
     let button = document.createElement("button");
     button.textContent = targets[target].url;
     button.onclick = function () {
-      onRequest(targets[target].url);
-      openWindow(targets[target].url);
+      start(targets[target].url);
     };
     let id = document.createElement("h2");
     id.textContent =
@@ -77,4 +83,4 @@ async function setUpButtons() {
     document.querySelector(".targets").appendChild(id);
   }
 }
-setUpButtons();
+document.querySelector(".start").onclick = setUpButtons();
