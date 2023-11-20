@@ -28,7 +28,6 @@ async function getManifestV3Targets() {
 async function onRequest(url) {
   payload = 'function () {' + payload + '}';
   await chrome.debugger.detach(target);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   await chrome.debugger.attach(target, "1.3");
   chrome.debugger.onEvent.addListener(async (details, info, event) => {
     if (event.request.url !== url) {
@@ -42,7 +41,7 @@ async function onRequest(url) {
       responseCode: 200,
       body: btoa(`(${payload})()`),
     });
-    await chrome.debugger.sendCommand(
+    return await chrome.debugger.sendCommand(
       { targetId: "browser" },
       "Target.createTarget",
       {
