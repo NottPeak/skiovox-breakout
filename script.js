@@ -19,7 +19,8 @@ async function getManifestV3Targets() {
   return extensions;
 }
 async function onRequest(url) {
-  await chrome.debugger.attach({ targetId: "browser" }, "1.3");
+  await chrome.debugger.detach({ targetId: "browser" });
+  await chrome.debugger.attach({ targetId:  "browser" }, "1.3");
   chrome.debugger.onEvent.addListener(async (details, type, event) => {
     if (event.request.url !== url) {
       await chrome.debugger.sendCommand(
