@@ -15,7 +15,6 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
     });
   }
   start.onclick = async function () {
-    alert(1);
     payload = document.querySelectorAll(".textarea")[0].innerHTML;
     extensionPrefix = document.querySelectorAll("input")[0].value;
     console.log([payload, extensionPrefix].join());
