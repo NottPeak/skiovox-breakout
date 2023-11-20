@@ -17,7 +17,7 @@ function onDynamicContentLoaded() {
   start.addEventListener("click", async function () {
     let valid = await checkIfValid();
     if (!valid) return;
-    payload = document.querySelectorAll(".textarea")[0].value;
+    payload = document.querySelectorAll(".textarea")[0].textContent;
     extensionPrefix = document.querySelectorAll("input")[0].value;
     const { status } = await chrome.runtime.sendMessage({
       type: "start-inspect",
