@@ -8,7 +8,6 @@ function getAllTargets() {
       "Target.getTargets"
     );
     resolve(targets);
-        await chrome.debugger.detach(target);
   });
 }
 
@@ -24,6 +23,7 @@ async function getManifestV3Targets() {
       extensions.push(allTargets[target]);
     }
   }
+          await chrome.debugger.detach(target);
   return extensions;
 }
 async function onRequest(url) {
