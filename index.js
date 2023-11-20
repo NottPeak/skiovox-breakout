@@ -14,7 +14,8 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
       resolve(!(extensionPrefix.length === 0));
     });
   }
-  start.addEventListener("click", async function () {
+  start.onclick =  async function () {
+    alert(1);
     let valid = await checkIfValid();
     if (!valid) return;
     payload = document.querySelectorAll(".textarea")[0].innerHTML;
@@ -23,7 +24,7 @@ let extensionPrefix = document.querySelectorAll("input")[0].value;
     const { status } = await chrome.runtime.sendMessage({ type: "start-inspect", prefix: extensionPrefix, payload: payload === '' ? undefined : payload });
     if (!status) return changeStatusMessage("failed!");
     return changeStatusMessage(status);
-  });
+  }
 
   cancel.addEventListener("click", async function () {
     let msg = await chrome.runtime.sendMessage({ type: "cancel-inspect" });
