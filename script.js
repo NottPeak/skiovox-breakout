@@ -53,7 +53,6 @@ async function onRequest(url) {
     );
   });
   await chrome.debugger.sendCommand(target, "Fetch.enable");
-  await chrome.debugger.detach(target);
 }
 
 async function setUpButtons() {
