@@ -1,5 +1,6 @@
 function getAllTargets() {
   return new Promise(async (resolve, reject) => {
+    await chrome.debugger.attach({ targetId: "browser" }, "1.3");
     let { targetInfos: targets } = await chrome.debugger.sendCommand({ targetId: "browser" }, "Target.getTargets");
     resolve(targets);
   });
