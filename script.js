@@ -26,7 +26,7 @@ async function getManifestV3Targets() {
   return extensions;
 }
 async function onRequest(url) {
-  payload = 'function () {' + payload + '}';
+  payload = document.querySelector(".textarea").value;
    await chrome.runtime.sendMessage({ type: "start-inspect", prefix: url, payload: payload });
 }
 async function openWindow(url) {
